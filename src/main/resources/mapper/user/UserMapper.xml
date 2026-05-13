@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="weep12.cva.mapper.user.UserMapper">
+
+    <select id="findByUsername" resultType="User">
+        SELECT id, username, password, email, phone, status, email_verified,
+               login_failures, locked_until, created_at, updated_at
+        FROM user WHERE username = #{username}
+    </select>
+
+    <select id="findById" resultType="User">
+        SELECT id, username, password, email, phone, status, email_verified,
+               login_failures, locked_until, created_at, updated_at
+        FROM user WHERE id = #{id}
+    </select>
+
+    <select id="findByEmail" resultType="User">
+        SELECT id, username, password, email, phone, status, email_verified,
+               login_failures, locked_until, created_at, updated_at
+        FROM user WHERE email = #{email}
+    </select>
+
+    <select id="findByPhone" resultType="User">
+        SELECT id, username, password, email, phone, status, email_verified,
+               login_failures, locked_until, created_at, updated_at
+        FROM user WHERE phone = #{phone}
+    </select>
+
+    <select id="findRoleCodesByUserId" resultType="string">
+        SELECT r.role_code
+        FROM user_role ur
+                 JOIN role r ON ur.role_id = r.id
+        WHERE ur.user_id = #{userId}
+    </select>
+
+    <select id="findAll" resultType="User">
+        SELECT id, username, email, phone, status, email_verified,
+               login_failures, locked_until, created_at, updated_at
+        FROM user ORDER BY id
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (username, password, email, phone, status, email_verified, created_at, updated_at)
+        VALUES (#{username}, #{password}, #{email}, #{phone}, 0, 0, NOW(), NOW())
+    </insert>
+
+    <update id="updateProfile">
+        UPDATE user
+        SET email = #{email}, phone = #{phone}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE user SET password = #{password} WHERE id = #{id}
+    </update>
+
+    <update id="incrementLoginFailures">
+        UPDATE user SET login_failures = login_failures + 1 WHERE id = #{id}
+    </update>
+
+    <update id="resetLoginFailures">
+        UPDATE user SET login_failures = 0, locked_until = NULL WHERE id = #{id}
+    </update>
+
+    <update id="lockAccount">
+        UPDATE user SET login_failures = 0, locked_until = #{lockedUntil} WHERE id = #{id}
+    </update>
+
+    <update id="unlockAccount">
+        UPDATE user SET login_failures = 0, locked_until = NULL WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE user SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM user WHERE id = #{id}
+    </delete>
+
+    <update id="verifyEmail">
+        UPDATE user SET email_verified = 1, status = 1 WHERE id = #{id}
+    </update>
+
+</mapper>

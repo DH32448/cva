@@ -1,0 +1,60 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: cva
+
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/mall_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # HikariCP 连接池配置
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      max-lifetime: 1200000
+
+  # Redis 缓存配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 3000ms
+      password:
+      lettuce:
+        pool:
+          min-idle: 0
+          max-idle: 8
+          max-active: 16
+          max-wait: -1ms
+
+  # 邮件发送配置（开发环境使用默认值，生产环境请修改）
+  mail:
+    host: smtp.example.com
+    port: 587
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# MyBatis 配置
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: weep12.cva.domain
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+# JWT 配置（仅开发环境使用，生产环境请更换密钥）
+jwt:
+  secret: 425955c39c99d65b69fb3bf59b788ef956ac2528151ceb01b557d02b609c3a8c
+  expiration: 86400000
