@@ -35,10 +35,10 @@ spring:
 
   # 邮件发送配置（开发环境使用默认值，生产环境请修改）
   mail:
-    host: smtp.example.com
+    host: smtp.qq.com
     port: 587
     username: 2421840631@qq.com
-    password: 
+    password:
     properties:
       mail:
         smtp:
