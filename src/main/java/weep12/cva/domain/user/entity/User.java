@@ -18,12 +18,9 @@ public class User {
     private Long id;
     private String username;
     private String password;
-    private String email;
     private String phone;
-    /** 账户状态：0-禁用, 1-启用（注册后需邮箱验证才会启用） */
+    /** 账户状态：0-禁用, 1-启用 */
     private Integer status;
-    /** 邮箱验证状态：0-未验证, 1-已验证 */
-    private Integer emailVerified;
     /** 连续登录失败次数，成功登录后归零 */
     private Integer loginFailures;
     /** 锁定截止时间，null 或过去时间表示未锁定 */

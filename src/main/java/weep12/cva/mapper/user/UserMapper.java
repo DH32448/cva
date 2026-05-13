@@ -9,17 +9,6 @@ import java.util.List;
 
 /**
  * 用户 Mapper 接口——对应 src/main/resources/mapper/user/UserMapper.xml 中的 SQL 映射。
- *
- * <p>方法分为以下几组：
- * <ul>
- *   <li><b>查询</b>: findByUsername, findById, findByEmail, findByPhone, findAll, findRoleCodesByUserId</li>
- *   <li><b>写入</b>: insert, updateProfile, updatePassword</li>
- *   <li><b>安全</b>: incrementLoginFailures, resetLoginFailures, lockAccount, unlockAccount</li>
- *   <li><b>管理</b>: updateStatus, deleteById</li>
- * </ul></p>
- *
- * <p>注意: findById 和 findByUsername 返回的 User 包含 password 字段，
- * 用于认证流程；findAll 和 admin 查询不返回密码。</p>
  */
 @Mapper
 public interface UserMapper {
@@ -31,9 +20,6 @@ public interface UserMapper {
 
     /** 根据 ID 查询 */
     User findById(Long id);
-
-    /** 根据邮箱查询——用于唯一性校验 */
-    User findByEmail(String email);
 
     /** 根据手机号查询——用于唯一性校验 */
     User findByPhone(String phone);
@@ -49,9 +35,8 @@ public interface UserMapper {
     /** 新增用户，返回自增主键 */
     int insert(User user);
 
-    /** 更新个人信息（邮箱、手机号） */
+    /** 更新个人信息（手机号） */
     int updateProfile(@Param("id") Long id,
-                      @Param("email") String email,
                       @Param("phone") String phone);
 
     /** 更新密码（已 BCrypt 加密） */
@@ -81,7 +66,4 @@ public interface UserMapper {
 
     /** 删除用户 */
     int deleteById(Long id);
-
-    /** 标记邮箱为已验证 */
-    int verifyEmail(@Param("id") Long id);
 }

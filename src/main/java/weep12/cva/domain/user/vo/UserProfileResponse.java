@@ -14,7 +14,6 @@ public class UserProfileResponse {
 
     private Long id;
     private String username;
-    private String email;
     private String phone;
     private Integer status;
     private LocalDateTime createdAt;
@@ -24,7 +23,6 @@ public class UserProfileResponse {
         UserProfileResponse vo = new UserProfileResponse();
         vo.setId(user.getId());
         vo.setUsername(user.getUsername());
-        vo.setEmail(user.getEmail());
         vo.setPhone(user.getPhone());
         vo.setStatus(user.getStatus());
         vo.setCreatedAt(user.getCreatedAt());

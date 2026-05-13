@@ -4,25 +4,19 @@
 <mapper namespace="weep12.cva.mapper.user.UserMapper">
 
     <select id="findByUsername" resultType="User">
-        SELECT id, username, password, email, phone, status, email_verified,
+        SELECT id, username, password, phone, status,
                login_failures, locked_until, created_at, updated_at
         FROM user WHERE username = #{username}
     </select>
 
     <select id="findById" resultType="User">
-        SELECT id, username, password, email, phone, status, email_verified,
+        SELECT id, username, password, phone, status,
                login_failures, locked_until, created_at, updated_at
         FROM user WHERE id = #{id}
     </select>
 
-    <select id="findByEmail" resultType="User">
-        SELECT id, username, password, email, phone, status, email_verified,
-               login_failures, locked_until, created_at, updated_at
-        FROM user WHERE email = #{email}
-    </select>
-
     <select id="findByPhone" resultType="User">
-        SELECT id, username, password, email, phone, status, email_verified,
+        SELECT id, username, password, phone, status,
                login_failures, locked_until, created_at, updated_at
         FROM user WHERE phone = #{phone}
     </select>
@@ -35,19 +29,19 @@
     </select>
 
     <select id="findAll" resultType="User">
-        SELECT id, username, email, phone, status, email_verified,
+        SELECT id, username, phone, status,
                login_failures, locked_until, created_at, updated_at
         FROM user ORDER BY id
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user (username, password, email, phone, status, email_verified, created_at, updated_at)
-        VALUES (#{username}, #{password}, #{email}, #{phone}, 0, 0, NOW(), NOW())
+        INSERT INTO user (username, password, phone, status, created_at, updated_at)
+        VALUES (#{username}, #{password}, #{phone}, 1, NOW(), NOW())
     </insert>
 
     <update id="updateProfile">
         UPDATE user
-        SET email = #{email}, phone = #{phone}
+        SET phone = #{phone}
         WHERE id = #{id}
     </update>
 
@@ -78,9 +72,5 @@
     <delete id="deleteById">
         DELETE FROM user WHERE id = #{id}
     </delete>
-
-    <update id="verifyEmail">
-        UPDATE user SET email_verified = 1, status = 1 WHERE id = #{id}
-    </update>
 
 </mapper>

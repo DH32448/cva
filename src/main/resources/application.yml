@@ -33,18 +33,6 @@ spring:
           max-active: 16
           max-wait: -1ms
 
-  # 邮件发送配置（开发环境使用默认值，生产环境请修改）
-  mail:
-    host: smtp.qq.com
-    port: 587
-    username: 2421840631@qq.com
-    password:
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
 
 # MyBatis 配置
 mybatis:

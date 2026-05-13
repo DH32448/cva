@@ -48,7 +48,6 @@ public class UserServiceImpl implements UserService {
      * 注册流程：
      * <ol>
      *   <li>校验用户名唯一性</li>
-     *   <li>校验邮箱唯一性（仅当传入非空值时）</li>
      *   <li>校验手机号唯一性（仅当传入非空值时）</li>
      *   <li>执行 INSERT——捕获数据库唯一约束冲突作为并发兜底</li>
      * </ol>
@@ -59,17 +58,13 @@ public class UserServiceImpl implements UserService {
         if (isUsernameTaken(user.getUsername())) {
             throw new BusinessException(409, "用户名已被占用");
         }
-        if (StringUtils.hasText(user.getEmail()) && isEmailTaken(user.getEmail())) {
-            throw new BusinessException(409, "邮箱已被注册");
-        }
         if (StringUtils.hasText(user.getPhone()) && isPhoneTaken(user.getPhone())) {
             throw new BusinessException(409, "手机号已被注册");
         }
         try {
             userMapper.insert(user);
         } catch (DataIntegrityViolationException e) {
-            // 并发注册或应用层检查与数据库不一致时的兜底处理
-            throw new BusinessException(409, "用户名或邮箱已存在");
+            throw new BusinessException(409, "用户名或手机号已存在");
         }
         log.info("用户注册: id={}, username={}", user.getId(), user.getUsername());
         return user.getId();
@@ -77,18 +72,15 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 更新个人信息——仅更新非空字段。
-     * 对传入的邮箱/手机号做"排除自身"的唯一性校验。
+     * 对传入的手机号做"排除自身"的唯一性校验。
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateProfile(Long userId, String email, String phone) {
-        if (StringUtils.hasText(email) && isEmailTakenByOther(userId, email)) {
-            throw new BusinessException(409, "邮箱已被其他用户使用");
-        }
+    public void updateProfile(Long userId, String phone) {
         if (StringUtils.hasText(phone) && isPhoneTakenByOther(userId, phone)) {
             throw new BusinessException(409, "手机号已被其他用户使用");
         }
-        int result = userMapper.updateProfile(userId, email, phone);
+        int result = userMapper.updateProfile(userId, phone);
         if (result == 0) {
             throw new BusinessException(404, "用户不存在");
         }
@@ -102,7 +94,6 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new BusinessException(404, "用户不存在");
         }
-        // BCrypt 慢比较，防时序攻击
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new BusinessException(400, "原密码不正确");
         }
@@ -111,19 +102,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isEmailTaken(String email) {
-        return userMapper.findByEmail(email) != null;
-    }
-
-    @Override
     public boolean isPhoneTaken(String phone) {
         return userMapper.findByPhone(phone) != null;
-    }
-
-    /** 检查邮箱是否被其他用户占用（用于修改个人信息场景） */
-    private boolean isEmailTakenByOther(Long userId, String email) {
-        User existing = userMapper.findByEmail(email);
-        return existing != null && !existing.getId().equals(userId);
     }
 
     /** 检查手机号是否被其他用户占用（用于修改个人信息场景） */
@@ -194,26 +174,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) {
-        return userMapper.findByEmail(email);
-    }
-
-    @Override
     public List<String> findRoleCodesByUserId(Long userId) {
         return userMapper.findRoleCodesByUserId(userId);
-    }
-
-    /**
-     * 验证邮箱——标记 email_verified=1, status=1。
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void verifyEmail(String email) {
-        User user = userMapper.findByEmail(email);
-        if (user == null) {
-            throw new BusinessException(404, "用户不存在");
-        }
-        userMapper.verifyEmail(user.getId());
-        log.info("邮箱验证成功: email={}", email);
     }
 }

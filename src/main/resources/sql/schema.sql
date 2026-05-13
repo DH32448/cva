@@ -14,17 +14,14 @@ CREATE TABLE `user` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户主键',
     `username` VARCHAR(50) NOT NULL COMMENT '登录用户名',
     `password` VARCHAR(255) NOT NULL COMMENT 'BCrypt 加密密码',
-    `email` VARCHAR(100) COMMENT '电子邮箱',
     `phone` VARCHAR(20) COMMENT '手机号码',
-    `status` TINYINT DEFAULT 0 COMMENT '账户状态：1-启用，0-禁用（注册需邮箱验证后启用）',
-    `email_verified` TINYINT DEFAULT 0 COMMENT '邮箱验证状态：0-未验证，1-已验证',
+    `status` TINYINT DEFAULT 1 COMMENT '账户状态：1-启用，0-禁用',
     `login_failures` INT DEFAULT 0 COMMENT '连续登录失败次数',
     `locked_until` DATETIME COMMENT '账户锁定截止时间',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_username` (`username`),
-    UNIQUE KEY `uk_email` (`email`)
+    UNIQUE KEY `uk_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
 -- 2. 角色表
@@ -116,11 +113,10 @@ INSERT INTO `role_permission` VALUES
 (3, 1), (3, 3);
 
 -- 插入测试用户（密码: 123456）
--- BCrypt 哈希值已通过验证，确保可以正确匹配密码 "123456"
-INSERT INTO `user` (`id`, `username`, `password`, `email`, `phone`, `status`, `email_verified`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '$2a$10$TDjDSaYbgguPDpqmH7m/5OUFX.dfewgG72SDMxOCPsugkkbngOr92', 'admin@mall.com', '13800000001', 1, 1, NOW(), NOW()),
-(2, 'merchant', '$2a$10$TDjDSaYbgguPDpqmH7m/5OUFX.dfewgG72SDMxOCPsugkkbngOr92', 'shop@mall.com', '13800000002', 1, 1, NOW(), NOW()),
-(3, 'user', '$2a$10$TDjDSaYbgguPDpqmH7m/5OUFX.dfewgG72SDMxOCPsugkkbngOr92', 'user@mall.com', '13800000003', 1, 1, NOW(), NOW());
+INSERT INTO `user` (`id`, `username`, `password`, `phone`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'admin', '$2a$10$TDjDSaYbgguPDpqmH7m/5OUFX.dfewgG72SDMxOCPsugkkbngOr92', '13800000001', 1, NOW(), NOW()),
+(2, 'merchant', '$2a$10$TDjDSaYbgguPDpqmH7m/5OUFX.dfewgG72SDMxOCPsugkkbngOr92', '13800000002', 1, NOW(), NOW()),
+(3, 'user', '$2a$10$TDjDSaYbgguPDpqmH7m/5OUFX.dfewgG72SDMxOCPsugkkbngOr92', '13800000003', 1, NOW(), NOW());
 
 -- 分配角色
 INSERT INTO `user_role` VALUES

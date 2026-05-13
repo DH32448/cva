@@ -14,20 +14,17 @@ public interface UserService {
 
     /**
      * 注册新用户。
-     * 前置校验：用户名/邮箱/手机号唯一性；数据库唯一约束兜底。
+     * 前置校验：用户名/手机号唯一性；数据库唯一约束兜底。
      *
      * @return 新用户 ID
      */
     Long register(User user);
 
-    /** 更新个人信息（邮箱、手机号），空值不覆盖 */
-    void updateProfile(Long userId, String email, String phone);
+    /** 更新个人信息（手机号），空值不覆盖 */
+    void updateProfile(Long userId, String phone);
 
     /** 修改密码，需验证旧密码 */
     void changePassword(Long userId, String oldPassword, String newPassword);
-
-    /** 检查邮箱是否已被注册 */
-    boolean isEmailTaken(String email);
 
     /** 检查手机号是否已被注册 */
     boolean isPhoneTaken(String phone);
@@ -48,21 +45,7 @@ public interface UserService {
     void recordLoginSuccess(String username);
 
     /**
-     * 根据邮箱查询用户——用于验证码登录。
-     * 返回 null 表示邮箱未注册。
-     */
-    User findByEmail(String email);
-
-    /**
      * 查询用户角色代码列表。
      */
     List<String> findRoleCodesByUserId(Long userId);
-
-    /**
-     * 验证邮箱——将用户状态置为启用。
-     *
-     * @param email 要验证的邮箱
-     * @throws BusinessException 若用户不存在
-     */
-    void verifyEmail(String email);
 }
